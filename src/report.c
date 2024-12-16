@@ -32,6 +32,7 @@ REP("remaining", "1.0f%%" , REMAINING_VARIABLES) \
 void
 kissat_report (kissat * solver, bool verbose, char type)
 {
+  /*
   statistics *statistics = &solver->statistics;
   const int verbosity = kissat_verbosity (solver);
   if (verbosity < 0)
@@ -141,6 +142,7 @@ kissat_report (kissat * solver, bool verbose, char type)
     COLOR (NORMAL);
   fputc ('\n', stdout);
   fflush (stdout);
+  */
 }
 
 #else

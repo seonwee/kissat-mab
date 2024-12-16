@@ -44,6 +44,10 @@ kissat_init (void)
   solver->mab_heuristics = 2;
   solver-> mab_decisions = 0;
   solver-> mab_chosen_tot = 0;
+  solver->origin_literals = 0;
+  solver->vivified_literals = 0;
+  solver->vivification_ratio = 0;
+  solver->isVivied = false;
 #ifndef NDEBUG
   kissat_init_checker (solver);
 #endif

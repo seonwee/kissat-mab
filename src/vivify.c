@@ -568,6 +568,8 @@ vivify_learn (kissat * solver, clause * c,
 	}
       assert (new_size < old_size);
       assert (new_size == size);
+      solver->vivified_literals += old_size - new_size;
+      solver->origin_literals += old_size;
       if (!c->shrunken)
 	{
 	  c->shrunken = true;
@@ -1051,6 +1053,8 @@ kissat_vivify (kissat * solver)
     return;
   if (!really_vivify (solver))
     return;
+  solver->origin_literals = 0;
+  solver->vivified_literals = 0;
   START (vivify);
   vivify_redundant_tier2 (solver);
   if (!solver->inconsistent)
@@ -1061,4 +1065,7 @@ kissat_vivify (kissat * solver)
 	vivify_irredundant (solver);
     }
   STOP (vivify);
+  solver->vivification_ratio = solver->origin_literals == 0 ? 0 : (double)solver->vivified_literals / (double)solver->origin_literals;
+  solver->isVivied = true;
+  // printf("vivification ratio : %lf\n",solver->vivification_ratio);
 }

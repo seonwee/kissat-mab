@@ -136,6 +136,10 @@ struct kissat
   double mab_decisions;
   unsigned *mab_chosen;
   unsigned mab_chosen_tot;
+  unsigned origin_literals;
+  unsigned vivified_literals;
+  double vivification_ratio;
+  bool isVivied;
 
   heap schedule;
 

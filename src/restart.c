@@ -111,9 +111,24 @@ reuse_trail (kissat * solver)
   return res;
 }
 
+const int vsids = 0;
+const int chb = 1;
+void mab_reward_compensation(kissat * solver,double vsids_reward,double other_reward){
+  const double reward_compensation_coeff = 1.6;
+  if(solver->isVivied && vsids_reward >= other_reward && solver->vivification_ratio >= 0.25){
+    double reward_compensation = vsids_reward * reward_compensation_coeff;
+    solver->mab_reward[vsids] += (reward_compensation >= 1.0 ? 1.0 : reward_compensation);
+    solver->mab_select[vsids]++; 
+  }
+  solver->isVivied = false;
+}
+
 void restart_mab(kissat * solver){   
 	unsigned stable_restarts = 0;
 	solver->mab_reward[solver->heuristic] += !solver->mab_chosen_tot?0:log2(solver->mab_decisions)/solver->mab_chosen_tot;
+  mab_reward_compensation(solver,
+                          solver->mab_reward[vsids]/(double)solver->mab_select[vsids],
+                          solver->mab_reward[chb]/(double)solver->mab_select[chb]);
 	for (all_variables (idx)) solver->mab_chosen[idx]=0;
 	solver->mab_chosen_tot = 0;
 	solver->mab_decisions = 0;
