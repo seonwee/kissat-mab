@@ -866,9 +866,9 @@ kissat_application (kissat * solver, int argc, char **argv)
 	  /*kissat_check_a (solver);*/
 	  printf ("s SATISFIABLE\n");
 	  fflush (stdout);
-	  if (application.witness)
-	    kissat_print_witness (solver,
-				  application.max_var, application.partial);
+	  // if (application.witness)
+	  //   kissat_print_witness (solver,
+		// 		  application.max_var, application.partial);
 	}
     }
 #ifndef QUIET
