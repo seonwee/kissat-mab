@@ -90,7 +90,8 @@ kissat_release (kissat * solver)
 // CHB
   kissat_release_heap (solver, &solver->scores_chb);
   DEALLOC_VARIABLE_INDEXED (conflicted_chb);
-
+  DEALLOC_VARIABLE_INDEXED (participated);
+  DEALLOC_VARIABLE_INDEXED (reasoned);
   kissat_release_heap (solver, &solver->schedule);
 
   kissat_release_clueue (solver, &solver->clueue);

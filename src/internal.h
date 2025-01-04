@@ -121,7 +121,9 @@ struct kissat
 
 // CHB 
   heap scores_chb;
-  unsigned *conflicted_chb;
+  unsigned *conflicted_chb;//assigned
+  unsigned *participated;
+  unsigned *reasoned;
   double step_chb;
   double step_dec_chb;
   double step_min_chb;

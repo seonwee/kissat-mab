@@ -92,11 +92,16 @@ kissat_search_propagate (kissat * solver)
   // CHB
   if(solver->stable && solver->heuristic==1){
       int i = SIZE_STACK (solver->trail) - 1;
-      unsigned lit = i>=0?PEEK_STACK (solver->trail, i):0;  
+      unsigned lit = i>=0?PEEK_STACK (solver->trail, i):0;
+      unsigned v; 
       while(i>=0 && LEVEL(lit)==solver->level){
-	    lit = PEEK_STACK (solver->trail, i);
-            kissat_bump_chb(solver,IDX(lit), conflict? 1.0 : 0.9); 
-	    i--;	    
+	      lit = PEEK_STACK (solver->trail, i);
+        v = IDX(lit);
+        // kissat_bump_chb(solver,IDX(lit), conflict? 1.0 : 0.9); 
+        solver->conflicted_chb[v] = solver->statistics.conflicts;
+        solver->participated[v] = 0;
+        solver->reasoned[v] = 0;
+	      i--;	    
       }
   }  
   if(solver->stable && solver->heuristic==1 && conflict) kissat_decay_chb(solver);

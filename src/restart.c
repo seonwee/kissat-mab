@@ -114,11 +114,11 @@ reuse_trail (kissat * solver)
 const int vsids = 0;
 const int chb = 1;
 void mab_reward_compensation(kissat * solver,double vsids_reward,double other_reward){
-  const double reward_compensation_coeff = 1.6;
-  if(solver->isVivied && vsids_reward >= other_reward && solver->vivification_ratio >= 0.25){
-    double reward_compensation = vsids_reward * reward_compensation_coeff;
-    solver->mab_reward[vsids] += (reward_compensation >= 1.0 ? 1.0 : reward_compensation);
-    solver->mab_select[vsids]++; 
+  const double reward_compensation_coeff = 1.5;
+  if(solver->isVivied && vsids_reward <= other_reward && solver->vivification_ratio <= 0.08){
+    double reward_compensation = other_reward * reward_compensation_coeff;
+    solver->mab_reward[chb] += (reward_compensation >= 1.0 ? 1.0 : reward_compensation);
+    solver->mab_select[chb]++;
   }
   solver->isVivied = false;
 }

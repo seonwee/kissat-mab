@@ -59,8 +59,12 @@ kissat_increase_size (kissat * solver, unsigned new_size)
   CREALLOC_VARIABLE_INDEXED (phase, phases);
 
   // MAB
-  if(solver->heuristic==1 || solver->mab)
-	CREALLOC_VARIABLE_INDEXED (unsigned,conflicted_chb);
+  if(solver->heuristic==1 || solver->mab){
+    CREALLOC_VARIABLE_INDEXED (unsigned,conflicted_chb);
+    CREALLOC_VARIABLE_INDEXED (unsigned,participated);
+    CREALLOC_VARIABLE_INDEXED (unsigned,reasoned);
+  }
+	
   if(solver->mab) CREALLOC_VARIABLE_INDEXED (unsigned, mab_chosen);
 
 
@@ -96,8 +100,11 @@ kissat_decrease_size (kissat * solver)
   NREALLOC_VARIABLE_INDEXED (flags, flags);
   NREALLOC_VARIABLE_INDEXED (links, links);
   NREALLOC_VARIABLE_INDEXED (phase, phases);
-  if(solver->heuristic==1 || solver->mab)
-     NREALLOC_VARIABLE_INDEXED (unsigned, conflicted_chb);
+  if(solver->heuristic==1 || solver->mab){
+    NREALLOC_VARIABLE_INDEXED (unsigned, conflicted_chb);
+    NREALLOC_VARIABLE_INDEXED (unsigned, participated);
+    NREALLOC_VARIABLE_INDEXED (unsigned, reasoned);
+  }
   if(solver->mab) NREALLOC_VARIABLE_INDEXED (unsigned, mab_chosen);
 
   NREALLOC_LITERAL_INDEXED (mark, marks);

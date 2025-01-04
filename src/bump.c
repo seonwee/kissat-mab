@@ -130,7 +130,7 @@ kissat_bump_variables (kissat * solver)
 }
 
 // CHB
-
+/*
 void kissat_bump_chb(kissat * solver, unsigned v, double multiplier) {
     int64_t age = solver->statistics.conflicts - solver->conflicted_chb[v] + 1;
     double reward_chb = multiplier / age;
@@ -140,17 +140,45 @@ void kissat_bump_chb(kissat * solver, unsigned v, double multiplier) {
        v, new_score, old_score);
     kissat_update_heap (solver, &solver->scores_chb, v, new_score);
 }
+*/
+
+void kissat_bump_lrb(kissat * solver, unsigned v){
+  unsigned age = solver->statistics.conflicts - solver->conflicted_chb[v];
+  if(age > 0) {
+    double r = (double)solver->participated[v] / (double)age;
+    double rsr = (double)solver->reasoned[v] / (double) age;
+    double old_r = kissat_get_heap_score (&solver->scores_chb, v);
+    double new_r = solver->step_chb * (r + rsr) + (1 - solver->step_chb) * old_r;
+    kissat_update_heap (solver, &solver->scores_chb, v, new_r);
+  }
+}
 
 void kissat_decay_chb(kissat * solver){
     if (solver->step_chb > solver->step_min_chb) solver->step_chb -= solver->step_dec_chb;
+
+    heap *scores = &solver->scores_chb;
+    const double decay_factor = 0.95;
+    flags *flags = solver->flags;
+    // 遍历堆中的所有变量
+    for (all_variables(idx)) {
+        if (flags[idx].active) {
+          // 获取当前分数并应用衰减
+          const double old_score = kissat_get_heap_score(scores, idx);
+          const double new_score = old_score * decay_factor;
+          
+          // 更新堆中的分数
+          kissat_update_heap(solver, scores, idx, new_score);
+        }
+    }
 }
 
 void
 kissat_update_conflicted_chb (kissat * solver)
 {
-  flags *flags = solver->flags;
+  // flags *flags = solver->flags;
 
   for (all_stack (unsigned, idx, solver->analyzed))
-    if (flags[idx].active)
-        solver->conflicted_chb[idx]=solver->statistics.conflicts;
+    // if (flags[idx].active)
+    //     solver->conflicted_chb[idx]=solver->statistics.conflicts;
+    solver->participated[idx]++;
 }

@@ -138,6 +138,9 @@ mark_literal_as_analyzed (kissat * solver, assigned * all_assigned,
   if (a->analyzed == ANALYZED)
     return;
   a->analyzed = ANALYZED;
+  if(strcmp("reason side",type) == 0){
+    solver->reasoned[idx]++;
+  }
   LOG ("marking %s literal %s as analyzed", type, LOGLIT (lit));
   PUSH_STACK (solver->analyzed, idx);
   (void) type;

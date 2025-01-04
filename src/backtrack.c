@@ -4,6 +4,7 @@
 #include "propsearch.h"
 #include "report.h"
 #include "trail.h"
+#include "bump.h"
 
 static inline void
 unassign (kissat * solver, value * values, unsigned lit)
@@ -113,6 +114,7 @@ kissat_backtrack (kissat * solver, unsigned new_level)
 	  else
 	    {
 	      unassign (solver, values, lit);
+        kissat_bump_lrb(solver, idx);
 	      add_unassigned_variable_back_to_heap (solver, scores, lit);
 	      unassigned++;
 	    }
