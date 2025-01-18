@@ -40,6 +40,9 @@ kissat_init (void)
 // CHB 
   solver->step_dec_chb = 0.000001;
   solver->step_min_chb = 0.06;
+//LRB
+  solver->step_dec_lrb = 0.000001;
+  solver->step_min_lrb = 0.06;
 // MAB
   solver->mab_heuristics = 2;
   solver-> mab_decisions = 0;
@@ -86,6 +89,13 @@ kissat_release (kissat * solver)
 // CHB
   kissat_release_heap (solver, &solver->scores_chb);
   DEALLOC_VARIABLE_INDEXED (conflicted_chb);
+
+// LRB
+  kissat_release_heap (solver, &solver->scores_lrb);
+  DEALLOC_VARIABLE_INDEXED (participated_lrb);
+  DEALLOC_VARIABLE_INDEXED (assigned_lrb);
+  DEALLOC_VARIABLE_INDEXED (reasoned_lrb);
+  DEALLOC_VARIABLE_INDEXED (unassigned_lrb);
 
   kissat_release_heap (solver, &solver->schedule);
 

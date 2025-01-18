@@ -262,7 +262,8 @@ kissat_analyze (kissat * solver, clause * conflict)
 	    kissat_bump_variables (solver);
 	  if(!solver->probing && solver->stable && (solver->heuristic==1))
 	    kissat_update_conflicted_chb (solver);
-          
+    if(!solver->probing && solver->stable && (solver->heuristic==2))
+      kissat_update_participate_lrb(solver);
 	  reset_analyze (solver);
 	  reset_levels (solver);
 	  res = 1;

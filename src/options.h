@@ -44,7 +44,7 @@ OPTION( failedreleff, 2, 0, 1e3, "relative efficiency in per mille") \
 OPTION( failedrounds, 2, 1, 100, "failed literal probing rounds") \
 OPTION( forcephase, 0, 0, 1, "force initial phase") \
 OPTION( forward, 1, 0, 1, "forward subsumption in BVE") \
-OPTION( heuristic, 0, 0, 1, "scoring heuristic (0=VSIDS,1=CHB)") \
+OPTION( heuristic, 0, 0, 2, "scoring heuristic (0=VSIDS,1=CHB,2=LRB)") \
 OPTION( hyper, 1, 0, 1, "on-the-fly hyper binary resolution") \
 OPTION( ifthenelse, 1, 0, 1, "extract and eliminate if-then-else gates") \
 OPTION( incremental, 0, 0, 1, "enable incremental solving") \
@@ -85,6 +85,7 @@ OPTION( stable, STABLE_DEFAULT, 0, 2, "enable stable search mode") \
 OPTION( stablebias, 100, 0, 1e3, "stable bias in percent") \
 NQTOPT( statistics, 0, 0, 1, "print complete statistics") \
 OPTION( stepchb, 4, 1, 9, "CHB step paramater") \
+OPTION( steplrb, 4, 1, 9, "LRB step paramater") \
 OPTION( substitute, 1, 0, 1, "equivalent literal substitution") \
 OPTION( substitutelim, 1e7, 0, INT_MAX, "substitute multiple round limit") \
 OPTION( substitutemineff, 1e6, 0, INT_MAX, "minimum efficiency") \

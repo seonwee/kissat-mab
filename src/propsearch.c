@@ -100,6 +100,6 @@ kissat_search_propagate (kissat * solver)
       }
   }  
   if(solver->stable && solver->heuristic==1 && conflict) kissat_decay_chb(solver);
-
+  if(solver->stable && solver->heuristic==2 && conflict) kissat_decay_lrb(solver);
   return conflict;
 }

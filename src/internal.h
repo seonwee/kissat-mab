@@ -126,6 +126,16 @@ struct kissat
   double step_dec_chb;
   double step_min_chb;
 
+// LRB
+  heap scores_lrb;
+  unsigned *participated_lrb;
+  unsigned *assigned_lrb;
+  unsigned *reasoned_lrb;
+  unsigned *unassigned_lrb;
+  double step_lrb;
+  double step_dec_lrb;
+  double step_min_lrb;
+
 // MAB
   unsigned heuristic;
   bool mab;

@@ -2,7 +2,7 @@
 #include "inline.h"
 #include "learn.h"
 #include "reluctant.h"
-
+#include "bump.h"
 #include <inttypes.h>
 
 static unsigned
@@ -124,6 +124,38 @@ kissat_learn_clause (kissat * solver)
     kissat_tick_reluctant (&solver->reluctant);
   const unsigned glue = SIZE_STACK (solver->levels);
   const unsigned size = SIZE_STACK (solver->clause.lits);
+  if(solver->stable && solver->heuristic==2)
+  {
+    int cnt = 0;
+    assigned *a = 0;
+    for (all_stack (unsigned, literal, solver->clause.lits))
+    {
+      a = ASSIGNED(literal);
+      if(a->reason != DECISION)
+      {
+        reference ref = a->reason;
+        clause *reason = kissat_dereference_clause (solver, ref);
+        for (all_literals_in_clause (lit, reason))
+        {
+          a = ASSIGNED(lit);
+          if(!a->analyzed)
+          {
+            cnt++;
+            a->analyzed = ANALYZED;
+            PUSH_STACK (solver->analyzed, IDX(lit));
+            unsigned idx = IDX(lit);
+            kissat_update_reasoned_lrb(solver, idx);
+          }          
+        }
+      }
+    }
+    while(cnt--){
+      unsigned idx = TOP_STACK(solver->analyzed);
+      POP_STACK(solver->analyzed);
+      a = ASSIGNED(idx << 1);
+      a->analyzed = 0;
+    }
+  }
   LOG ("learned[%" PRIu64 "] clause glue %u size %u",
        GET (learned), glue, size);
   if (!solver->probing)

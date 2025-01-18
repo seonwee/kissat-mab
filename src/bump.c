@@ -154,3 +154,35 @@ kissat_update_conflicted_chb (kissat * solver)
     if (flags[idx].active)
         solver->conflicted_chb[idx]=solver->statistics.conflicts;
 }
+
+// LRB
+void kissat_decay_lrb(kissat* solver) {
+    if (solver->step_lrb > solver->step_min_lrb) solver->step_lrb -= solver->step_dec_lrb;
+}
+
+void kissat_update_participate_lrb(kissat* solver)
+{
+    flags* flags = solver->flags;
+
+    for (all_stack(unsigned, idx, solver->analyzed))
+        if (flags[idx].active)
+            solver->participated_lrb[idx]++;
+}
+
+void kissat_update_reasoned_lrb(struct kissat* solver, unsigned idx){
+    solver->reasoned_lrb[idx]++;
+}
+void kissat_bump_lrb(kissat* solver, unsigned idx)
+{
+    assert(solver->stable && solver->heuristic == 2);
+    assert(CONFLICTS > solver->assigned_lrb[idx]);
+
+    uint64_t age = CONFLICTS - solver->assigned_lrb[idx];
+    if(age > 0)
+    {
+      double r_plus_rsr = (double)(solver->participated_lrb[idx] + solver->reasoned_lrb[idx]) / (double)age;
+      double old_score = kissat_get_heap_score(&solver->scores_lrb, idx);
+      double new_score = (1.0 - solver->step_lrb) * old_score + solver->step_lrb * r_plus_rsr;
+      kissat_update_heap(solver, &solver->scores_lrb, idx, new_score);
+    }
+}

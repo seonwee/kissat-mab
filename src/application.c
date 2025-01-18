@@ -603,6 +603,7 @@ parse_options (application * application, int argc, char **argv)
     }
 #endif
   solver->step_chb = 0.1*GET_OPTION(stepchb);
+  solver->step_lrb = 0.1*GET_OPTION(steplrb);
   solver->heuristic = GET_OPTION(heuristic);
   solver->mab = GET_OPTION(mab);
   if(solver->mab) {

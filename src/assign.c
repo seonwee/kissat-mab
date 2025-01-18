@@ -1,7 +1,7 @@
 #include "inline.h"
 #include "assign.h"
 #include "logging.h"
-
+#include <math.h>
 #include <limits.h>
 
 static inline void
@@ -66,6 +66,19 @@ kissat_assign (kissat * solver,
     {
       watch *w = BEGIN_WATCHES (*watches);
       __builtin_prefetch (w, 0, 1);
+    }
+    if(solver->stable && solver->heuristic==2)
+    {
+      solver->assigned_lrb[idx] = CONFLICTS;
+      solver->participated_lrb[idx] = 0;
+      solver->reasoned_lrb[idx] = 0;
+      unsigned age = CONFLICTS - solver->unassigned_lrb[idx];
+      if(age > 0){
+        double decay = pow(0.95,age);
+        double old_score = kissat_get_heap_score(&solver->scores_lrb, idx);
+        double new_score = decay * old_score;
+        kissat_update_heap(solver, &solver->scores_lrb, idx, new_score);
+      }
     }
 }
 
