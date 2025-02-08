@@ -44,9 +44,12 @@ kissat_init (void)
   solver->step_dec_lrb = 0.000001;
   solver->step_min_lrb = 0.06;
 // MAB
-  solver->mab_heuristics = 2;
+  solver->mab_heuristics = 3;
   solver-> mab_decisions = 0;
   solver-> mab_chosen_tot = 0;
+  solver->mab_heuristics_flag[0] = true;
+  solver->mab_heuristics_flag[1] = false;
+  solver->mab_heuristics_flag[2] = true;
 #ifndef NDEBUG
   kissat_init_checker (solver);
 #endif

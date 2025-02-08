@@ -221,10 +221,18 @@ compact_scores (kissat * solver, unsigned vars, heap *old_scores)
     }
 
   kissat_release_heap (solver, old_scores);
-  if(solver->heuristic==0)
-     solver->scores = new_scores;
-  else
-     solver->scores_chb = new_scores;
+  switch (solver->heuristic)
+  {
+    case 0:
+      solver->scores = new_scores;
+      break;
+    case 1:
+      solver->scores_chb = new_scores;
+      break;
+    case 2:
+      solver->scores_lrb = new_scores;
+      break;
+  }
 }
 
 static void
@@ -457,8 +465,25 @@ kissat_finalize_compacting (kissat * solver, unsigned vars, unsigned mfixed)
 	compact_scores (solver, vars,&solver->scores);
 	solver->heuristic = 1;
 	compact_scores (solver, vars,&solver->scores_chb);
+  solver->heuristic = 2;
+  compact_scores (solver, vars,&solver->scores_lrb);
         solver->heuristic = old_heuristic;
-  }else compact_scores (solver, vars,solver->heuristic==0?&solver->scores:&solver->scores_chb);
+  }else {
+    heap *scores = NULL;
+    switch (solver->heuristic)
+    {
+    case 0:
+      scores = &solver->scores;
+      break;
+    case 1:
+      scores = &solver->scores_chb;
+      break;
+    case 2:
+      scores = &solver->scores_lrb;
+      break;
+    } 
+    compact_scores (solver, vars, scores);
+  }
 
   compact_frames (solver);
   compact_export (solver, vars);

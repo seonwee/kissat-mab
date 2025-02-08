@@ -72,7 +72,22 @@ kissat_next_decision_variable (kissat * solver)
 {
   unsigned res;
   if (solver->stable)
-    res = largest_score_unassigned_variable (solver,solver->heuristic==0?&solver->scores:&solver->scores_chb);
+  {
+    heap *scores = NULL;
+    switch (solver->heuristic)
+    {
+    case 0:
+      scores = &solver->scores;
+      break;
+    case 1:
+      scores = &solver->scores_chb;
+      break;
+    case 2:
+      scores = &solver->scores_lrb;
+      break;
+    }
+    res = largest_score_unassigned_variable (solver,scores);
+  }    
   else
     res = last_enqueued_unassigned_variable (solver);
   LOG ("next decision variable %u", res);

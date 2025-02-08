@@ -79,7 +79,8 @@ kissat_increase_size (kissat * solver, unsigned new_size)
      kissat_resize_heap (solver, &solver->scores, new_size);
   if(solver->heuristic==1 || solver->mab)
      kissat_resize_heap (solver, &solver->scores_chb, new_size);
-
+  if(solver->heuristic==2 || solver->mab)
+     kissat_resize_heap (solver, &solver->scores_lrb, new_size);
   solver->size = new_size;
 
 #ifndef NMETRICS
@@ -122,7 +123,8 @@ kissat_decrease_size (kissat * solver)
      kissat_resize_heap (solver, &solver->scores, new_size);
   if(solver->heuristic==1 || solver->mab)
      kissat_resize_heap (solver, &solver->scores_chb, new_size);
-
+  if(solver->heuristic==2 || solver->mab)
+     kissat_resize_heap (solver, &solver->scores_lrb, new_size);
   solver->size = new_size;
 
 #ifndef NMETRICS

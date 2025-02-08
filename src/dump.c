@@ -144,7 +144,19 @@ dump_queue (kissat * solver)
 static void
 dump_scores (kissat * solver)
 {
-  heap *heap = solver->heuristic==0?&solver->scores:&solver->scores_chb;
+  heap *heap;
+  switch (solver->heuristic)
+  {
+  case 0:
+    heap = &solver->scores;
+    break;
+  case 1:
+    heap = &solver->scores_chb;
+    break;
+  case 2:
+    heap = &solver->scores_lrb;
+    break;
+  }
   printf ("scores.vars = %u\n", heap->vars);
   printf ("scores.size = %u\n", heap->size);
   for (unsigned i = 0; i < SIZE_STACK (heap->stack); i++)

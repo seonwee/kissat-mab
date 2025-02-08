@@ -713,7 +713,19 @@ vivify_clause (kissat * solver, clause * c,
       TERMINAL (stdout, 1);
       COLOR (MAGENTA);
       printf ("c LOG %u vivify sorted", solver->level);
-      heap *scores = solver->heuristic==0?&solver->scores:&solver->scores_chb;
+      heap *scores = NULL;
+      switch (solver->heuristic)
+      {
+        case 0:
+          scores = &solver->scores;
+          break;
+        case 1:
+          scores = &solver->scores_chb;
+          break;
+        case 2:
+          scores = &solver->scores_lrb;
+          break;
+      }
       links *links = solver->links;
       for (all_stack (unsigned, lit, *sorted))
 	{

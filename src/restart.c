@@ -51,7 +51,19 @@ static unsigned
 reuse_stable_trail (kissat * solver)
 {
   const unsigned next_idx = kissat_next_decision_variable (solver);
-  const heap *scores = solver->heuristic==0?&solver->scores:&solver->scores_chb;
+  heap *scores = NULL;
+  switch (solver->heuristic)
+  {
+    case 0:
+      scores = &solver->scores;
+      break;
+    case 1:
+      scores = &solver->scores_chb;
+      break;
+    case 2:
+      scores = &solver->scores_lrb;
+      break;
+  }
   const unsigned next_idx_score = kissat_get_heap_score (scores, next_idx);
   LOG ("next decision variable score %u", next_idx_score);
   unsigned res = 0;
@@ -112,20 +124,39 @@ reuse_trail (kissat * solver)
 }
 
 void restart_mab(kissat * solver){   
+  assert(solver->mab_heuristics_flag[solver->heuristic] == true);
 	unsigned stable_restarts = 0;
 	solver->mab_reward[solver->heuristic] += !solver->mab_chosen_tot?0:log2(solver->mab_decisions)/solver->mab_chosen_tot;
 	for (all_variables (idx)) solver->mab_chosen[idx]=0;
 	solver->mab_chosen_tot = 0;
 	solver->mab_decisions = 0;
-	for(unsigned i=0;i<solver->mab_heuristics;i++) stable_restarts +=  solver->mab_select[i];
+	for(unsigned i=0;i<solver->mab_heuristics;i++)
+  {
+    if(solver->mab_heuristics_flag[i])
+      stable_restarts +=  solver->mab_select[i];
+  } 
 	if(stable_restarts < solver->mab_heuristics) {
-		solver->heuristic = solver->heuristic==0?1:0; 
+    for(unsigned i=solver->heuristic+1;i<solver->mab_heuristics;i++)
+    {
+      if(solver->mab_heuristics_flag[i])
+      {
+        solver->heuristic = i;
+        break;
+      }
+    }
 	}else{
-		double ucb[2];
-		solver->heuristic = 0;
+		double ucb[3] = {0};
+    double max_ucb = 0;
 		for(unsigned i=0;i<solver->mab_heuristics;i++) {
-		     ucb[i] = solver->mab_reward[i]/solver->mab_select[i] + sqrt(solver->mabc*log(stable_restarts+1)/solver->mab_select[i]);
-		     if(i!=0 && ucb[i]>ucb[solver->heuristic]) solver->heuristic = i;
+        if(solver->mab_heuristics_flag[i])
+        {
+          ucb[i] = solver->mab_reward[i]/solver->mab_select[i] + sqrt(solver->mabc*log(stable_restarts+1)/solver->mab_select[i]);
+          if(ucb[i] > max_ucb)
+          {
+            max_ucb = ucb[i];
+            solver->heuristic = i;
+          }
+        }
 		  }
 	}
 	solver->mab_select[solver->heuristic]++; 

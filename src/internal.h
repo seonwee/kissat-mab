@@ -140,12 +140,13 @@ struct kissat
   unsigned heuristic;
   bool mab;
   double mabc;
-  double mab_reward[2];
-  unsigned mab_select[2];
+  double mab_reward[3];
+  unsigned mab_select[3];
   unsigned mab_heuristics;
   double mab_decisions;
   unsigned *mab_chosen;
   unsigned mab_chosen_tot;
+  bool mab_heuristics_flag[3];
 
   heap schedule;
 

@@ -18,7 +18,24 @@ activate_literal (kissat * solver, unsigned lit)
   if(solver->mab) {
 	kissat_push_heap (solver,&solver->scores, idx);
 	kissat_push_heap (solver, &solver->scores_chb, idx);
-  }else kissat_push_heap (solver, solver->heuristic==0?&solver->scores:&solver->scores_chb, idx);
+  kissat_push_heap (solver, &solver->scores_lrb, idx);
+  }else
+  {
+    heap *scores = NULL;
+    switch (solver->heuristic)
+    {
+    case 0:
+      scores = &solver->scores;
+      break;
+    case 1:
+      scores = &solver->scores_chb;
+      break;
+    case 2:
+      scores = &solver->scores_lrb;
+      break;
+    }
+    kissat_push_heap (solver, scores, idx);
+  } 
 
   assert (solver->unassigned < UINT_MAX);
   solver->unassigned++;
@@ -48,9 +65,24 @@ deactivate_variable (kissat * solver, flags * f, unsigned idx)
     		kissat_pop_heap (solver, &solver->scores, idx);
 	if (kissat_heap_contains (&solver->scores_chb, idx))
 	    	kissat_pop_heap (solver,&solver->scores_chb, idx);
+  if (kissat_heap_contains (&solver->scores_lrb, idx))
+        kissat_pop_heap (solver,&solver->scores_lrb, idx);
   }else{
-        if (kissat_heap_contains (solver->heuristic==0?&solver->scores:&solver->scores_chb, idx))
-    	        kissat_pop_heap (solver, solver->heuristic==0?&solver->scores:&solver->scores_chb, idx);
+        heap *scores = NULL;
+        switch (solver->heuristic)
+        {
+        case 0:
+          scores = &solver->scores;
+          break;
+        case 1:
+          scores = &solver->scores_chb;
+          break;
+        case 2:
+          scores = &solver->scores_lrb;
+          break;
+        }
+        if (kissat_heap_contains (scores, idx))
+    	        kissat_pop_heap (solver, scores, idx);
   }
 }
 

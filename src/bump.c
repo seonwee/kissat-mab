@@ -172,6 +172,7 @@ void kissat_update_participate_lrb(kissat* solver)
 void kissat_update_reasoned_lrb(struct kissat* solver, unsigned idx){
     solver->reasoned_lrb[idx]++;
 }
+
 void kissat_bump_lrb(kissat* solver, unsigned idx)
 {
     assert(solver->stable && solver->heuristic == 2);

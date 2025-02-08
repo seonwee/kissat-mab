@@ -121,7 +121,19 @@ switch_to_focused_mode (kissat * solver)
 void
 kissat_update_scores (kissat * solver)
 {
-  heap *scores = solver->heuristic==0?&solver->scores:&solver->scores_chb;
+  heap *scores = NULL;
+  switch (solver->heuristic)
+  {
+    case 0:
+      scores = &solver->scores;
+      break;
+    case 1:
+      scores = &solver->scores_chb;
+      break;
+    case 2:
+      scores = &solver->scores_lrb;
+      break;
+  }
   for (all_variables (idx))
     if (ACTIVE (idx) && !kissat_heap_contains (scores, idx))
       kissat_push_heap (solver, scores, idx);
