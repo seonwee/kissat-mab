@@ -150,7 +150,13 @@ void restart_mab(kissat * solver){
 		for(unsigned i=0;i<solver->mab_heuristics;i++) {
         if(solver->mab_heuristics_flag[i])
         {
-          ucb[i] = solver->mab_reward[i]/solver->mab_select[i] + sqrt(solver->mabc*log(stable_restarts+1)/solver->mab_select[i]);
+          double conficence_interval = sqrt(solver->mabc*log(stable_restarts+1)/solver->mab_select[i]);
+          if(i == 2 && solver->isVivied && solver->vivification_ratio < 0.01)
+          {
+            conficence_interval *= 1.1;
+            solver->triggered_cnt++;
+          }
+          ucb[i] = solver->mab_reward[i]/solver->mab_select[i] + conficence_interval;
           if(ucb[i] > max_ucb)
           {
             max_ucb = ucb[i];

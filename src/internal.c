@@ -55,6 +55,7 @@ kissat_init (void)
   solver->vivified_literals = 0;
   solver->vivification_ratio = 0;
   solver->isVivied = false;
+  solver->triggered_cnt = 0;
 #ifndef NDEBUG
   kissat_init_checker (solver);
 #endif
@@ -275,6 +276,13 @@ kissat_print_statistics (kissat * solver)
 	printf("c MAB stats : ");
         for (unsigned i=0;i<solver->mab_heuristics;i++) printf("%d ",solver->mab_select[i]);
 	printf("\n");
+  printf("c MAB reward : ");
+        for (unsigned i=0;i<solver->mab_heuristics;i++)
+          if(solver->mab_heuristics_flag[i]) printf("%lf ",solver->mab_reward[i] / solver->mab_select[i]);
+          else printf("0 ");
+  printf("\n");
+  printf("c Triggered cnt : %d\n",solver->triggered_cnt);
+  printf("c Vivification ratio : %lf\n",solver->vivification_ratio);
   }
 #ifndef NPROOFS
   if (solver->proof)
