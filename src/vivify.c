@@ -747,7 +747,7 @@ vivify_clause (kissat * solver, clause * c,
       fflush (stdout);
     }
 #endif
-
+  solver->origin_literals += non_false;
   unsigned implied = INVALID_LIT;
   clause *conflict = 0;
   unsigned level = 0;
@@ -837,7 +837,10 @@ vivify_clause (kissat * solver, clause * c,
 	  res = true;
 	}
       else
-	res = vivify_learn (solver, c, non_false, irredundant, implied);
+      {
+        solver->vivified_literals += non_false - SIZE_STACK(solver->clause.lits);
+        res = vivify_learn (solver, c, non_false, irredundant, implied);
+      }	
 
       reset_vivify_analyzed (solver);
     }
@@ -1064,6 +1067,8 @@ kissat_vivify (kissat * solver)
   if (!really_vivify (solver))
     return;
   START (vivify);
+  // solver->origin_literals = 0;
+  // solver->vivified_literals = 0;
   vivify_redundant_tier2 (solver);
   if (!solver->inconsistent)
     {
@@ -1072,5 +1077,7 @@ kissat_vivify (kissat * solver)
 	  IRREDUNDANT_CLAUSES / 10 < REDUNDANT_CLAUSES)
 	vivify_irredundant (solver);
     }
+  solver->vivification_ratio = solver->origin_literals == 0 ? 0 : (double)solver->vivified_literals / (double)solver->origin_literals;
+  solver->isVivied = true;
   STOP (vivify);
 }

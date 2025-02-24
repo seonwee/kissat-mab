@@ -147,6 +147,11 @@ struct kissat
   unsigned *mab_chosen;
   unsigned mab_chosen_tot;
   bool mab_heuristics_flag[3];
+// Vivification Ratio
+  unsigned origin_literals;
+  unsigned vivified_literals;
+  double vivification_ratio;
+  bool isVivied;
 
   heap schedule;
 

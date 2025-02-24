@@ -50,6 +50,11 @@ kissat_init (void)
   solver->mab_heuristics_flag[0] = true;
   solver->mab_heuristics_flag[1] = false;
   solver->mab_heuristics_flag[2] = true;
+// Vivification Ratio
+  solver->origin_literals = 0;
+  solver->vivified_literals = 0;
+  solver->vivification_ratio = 0;
+  solver->isVivied = false;
 #ifndef NDEBUG
   kissat_init_checker (solver);
 #endif
