@@ -276,6 +276,7 @@ kissat_print_statistics (kissat * solver)
 	printf("c MAB stats : ");
         for (unsigned i=0;i<solver->mab_heuristics;i++) printf("%d ",solver->mab_select[i]);
 	printf("\n");
+  solver->mab_select[solver->heuristic]--;
   printf("c MAB reward : ");
         for (unsigned i=0;i<solver->mab_heuristics;i++)
           if(solver->mab_heuristics_flag[i]) printf("%lf ",solver->mab_reward[i] / solver->mab_select[i]);
