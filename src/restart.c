@@ -160,6 +160,7 @@ void restart_mab(kissat * solver){
 		  }
 	}
 	solver->mab_select[solver->heuristic]++; 
+  solver->isVivied = false;
 }
 
 void
