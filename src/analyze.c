@@ -263,7 +263,8 @@ kissat_analyze (kissat * solver, clause * conflict)
         a = ASSIGNED(literal);
         if(a->reason != DECISION && a->level)
         {
-          if(a->binary){
+          if(a->binary)
+          {
             const unsigned reason_lit = a->reason;
             assigned *reason_a = ASSIGNED(reason_lit);
             if(!reason_a->analyzed)

@@ -1,6 +1,6 @@
 #include "decide.h"
 #include "inline.h"
-
+#include <math.h>
 #include <inttypes.h>
 
 static unsigned
@@ -35,11 +35,39 @@ static unsigned
 largest_score_unassigned_variable (kissat * solver, heap * heap)
 {
   unsigned res = kissat_max_heap (heap);
+  if(solver->stable && solver->heuristic==2)
+  {
+    unsigned idx = res;
+    unsigned age = CONFLICTS - solver->unassigned_lrb[idx];
+    while(age > 0){
+      double decay = pow(0.95,age);
+      double old_score = kissat_get_heap_score(heap, idx);
+      double new_score = decay * old_score;
+      kissat_update_heap(solver, heap, idx, new_score);
+      solver->unassigned_lrb[idx] = CONFLICTS;
+      idx = kissat_max_heap(heap);
+      age = CONFLICTS - solver->unassigned_lrb[idx];
+    }
+  }
   const value *values = solver->values;
   while (values[LIT (res)])
     {
       kissat_pop_heap (solver, heap, res);
       res = kissat_max_heap (heap);
+      if(solver->stable && solver->heuristic==2)
+      {
+        unsigned idx = res;
+        unsigned age = CONFLICTS - solver->unassigned_lrb[idx];
+        while(age > 0){
+          double decay = pow(0.95,age);
+          double old_score = kissat_get_heap_score(heap, idx);
+          double new_score = decay * old_score;
+          kissat_update_heap(solver, heap, idx, new_score);
+          solver->unassigned_lrb[idx] = CONFLICTS;
+          idx = kissat_max_heap(heap);
+          age = CONFLICTS - solver->unassigned_lrb[idx];
+        }
+      }
     }
 
   // MAB
