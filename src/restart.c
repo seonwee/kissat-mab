@@ -147,6 +147,21 @@ void restart_mab(kissat * solver){
 	}else{
 		double ucb[3] = {0};
     double max_ucb = 0;
+    // reward compensation
+    if(solver->isVivied)
+    {
+      double vsids_reward = solver->mab_reward[0]/solver->mab_select[0];
+      double lrb_reward = solver->mab_reward[2]/solver->mab_select[2];
+      if(solver->vivification_ratio <= 0.011)
+      {
+        const double coefficient = 1.5;
+        if(lrb_reward >= vsids_reward)
+        {
+          solver->mab_reward[2] += lrb_reward * coefficient;
+          solver->mab_select[2]++;
+        }
+      }
+    }
 		for(unsigned i=0;i<solver->mab_heuristics;i++) {
         if(solver->mab_heuristics_flag[i])
         {
