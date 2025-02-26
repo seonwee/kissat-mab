@@ -150,8 +150,8 @@ void restart_mab(kissat * solver){
     // reward compensation
     if(solver->isVivied)
     {
-      double vsids_reward = solver->mab_reward[0]/solver->mab_select[0];
-      double lrb_reward = solver->mab_reward[2]/solver->mab_select[2];
+      double vsids_reward = solver->mab_reward[0]/(double)solver->mab_select[0];
+      double lrb_reward = solver->mab_reward[2]/(double)solver->mab_select[2];
       if(solver->vivification_ratio <= 0.011)
       {
         const double coefficient = 1.5;
