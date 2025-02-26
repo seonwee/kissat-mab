@@ -1067,8 +1067,8 @@ kissat_vivify (kissat * solver)
   if (!really_vivify (solver))
     return;
   START (vivify);
-  // solver->origin_literals = 0;
-  // solver->vivified_literals = 0;
+  solver->origin_literals = 0;
+  solver->vivified_literals = 0;
   vivify_redundant_tier2 (solver);
   if (!solver->inconsistent)
     {
