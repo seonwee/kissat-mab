@@ -159,6 +159,7 @@ void restart_mab(kissat * solver){
         {
           solver->mab_reward[2] += lrb_reward * coefficient;
           solver->mab_select[2]++;
+          solver->triggered_cnt++;
         }
       }
     }
