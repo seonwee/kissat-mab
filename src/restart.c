@@ -159,8 +159,14 @@ void restart_mab(kissat * solver){
         {
           solver->mab_reward[2] += lrb_reward * coefficient;
           solver->mab_select[2]++;
-          solver->triggered_cnt++;
+        }else{
+          double prob = kissat_pick_double(solver->random);
+          if(prob < 0.8){
+            solver->mab_reward[2] += lrb_reward * coefficient;
+            solver->mab_select[2]++;
+          }
         }
+        solver->triggered_cnt++;
       }
     }
 		for(unsigned i=0;i<solver->mab_heuristics;i++) {
