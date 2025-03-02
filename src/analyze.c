@@ -252,8 +252,6 @@ kissat_analyze (kissat * solver, clause * conflict)
       else
 	{
 	  kissat_minimize_clause (solver);
-	  if (!solver->probing)
-	    analyze_reason_side_literals (solver);
     if(solver->stable && solver->heuristic==2)
     {
       int cnt = 0;
@@ -261,6 +259,7 @@ kissat_analyze (kissat * solver, clause * conflict)
       for (all_stack (unsigned, literal, solver->clause.lits))
       {
         a = ASSIGNED(literal);
+        a->analyzed = ANALYZED;
         if(a->reason != DECISION && a->level)
         {
           if(a->binary)
@@ -282,11 +281,11 @@ kissat_analyze (kissat * solver, clause * conflict)
             clause *reason = kissat_dereference_clause (solver, ref);
             for (all_literals_in_clause (lit, reason))
             {          
-              a = ASSIGNED(lit);
-              if(!a->analyzed)
+              assigned *reason_a = ASSIGNED(lit);
+              if(!reason_a->analyzed)
               {
                 cnt++;
-                a->analyzed = ANALYZED;
+                reason_a->analyzed = ANALYZED;
                 unsigned idx = IDX(lit);
                 PUSH_STACK (solver->analyzed, idx);
                 kissat_update_reasoned_lrb(solver, idx);
@@ -294,6 +293,7 @@ kissat_analyze (kissat * solver, clause * conflict)
             }
           }            
         }
+        a->analyzed = 0;
       }
       while(cnt--){
         unsigned idx = TOP_STACK(solver->analyzed);
@@ -301,6 +301,8 @@ kissat_analyze (kissat * solver, clause * conflict)
         solver->assigned[idx].analyzed = 0;
       }
     }
+	  if (!solver->probing)
+	    analyze_reason_side_literals (solver);
 	  reset_markings (solver);
 	  kissat_learn_clause (solver);
 
