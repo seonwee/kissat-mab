@@ -1079,5 +1079,7 @@ kissat_vivify (kissat * solver)
     }
   solver->vivification_ratio = solver->origin_literals == 0 ? 0 : (double)solver->vivified_literals / (double)solver->origin_literals;
   solver->isVivied = true;
+  solver->triggered_cnt++;
+  solver->vivification_ratio_sum += solver->vivification_ratio;
   STOP (vivify);
 }
