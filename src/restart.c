@@ -152,22 +152,13 @@ void restart_mab(kissat * solver){
     {
       double vsids_reward = solver->mab_reward[0]/(double)solver->mab_select[0];
       double lrb_reward = solver->mab_reward[2]/(double)solver->mab_select[2];
-      if(solver->vivification_ratio <= 0.011)
-      {
         const double coefficient = 1.5;
         if(lrb_reward >= vsids_reward)
         {
           solver->mab_reward[2] += lrb_reward * coefficient;
           solver->mab_select[2]++;
-        }else{
-          double prob = kissat_pick_double(&solver->random);
-          if(prob < 0.8){
-            solver->mab_reward[2] += lrb_reward * coefficient;
-            solver->mab_select[2]++;
-          }
+          solver->triggered_cnt++;
         }
-        solver->triggered_cnt++;
-      }
     }
 		for(unsigned i=0;i<solver->mab_heuristics;i++) {
         if(solver->mab_heuristics_flag[i])
