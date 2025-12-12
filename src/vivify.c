@@ -820,7 +820,10 @@ vivify_clause (kissat * solver, clause * c,
     }
 
   if (c->garbage)
+  {
     assert (EMPTY_STACK (solver->analyzed));
+    solver->vivified_literals += non_false;
+  }
   else if (conflict)
     {
       assert (!EMPTY_STACK (solver->analyzed));
@@ -834,6 +837,7 @@ vivify_clause (kissat * solver, clause * c,
 	  LOGCLS (c, "vivify subsumed");
 	  kissat_mark_clause_as_garbage (solver, c);
 	  vivify_inc_subsume (solver, c);
+    solver->vivified_literals += non_false;
 	  res = true;
 	}
       else
