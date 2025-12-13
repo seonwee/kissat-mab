@@ -158,6 +158,7 @@ void restart_mab(kissat * solver){
           solver->mab_reward[2] += lrb_reward * coefficient;
           solver->mab_select[2]++;
           solver->reward_compensation_cnt++;
+          solver->isVivied = false;
         }
     }
 		for(unsigned i=0;i<solver->mab_heuristics;i++) {
@@ -172,8 +173,7 @@ void restart_mab(kissat * solver){
         }
 		  }
 	}
-	solver->mab_select[solver->heuristic]++; 
-  solver->isVivied = false;
+	solver->mab_select[solver->heuristic]++;
 }
 
 void
