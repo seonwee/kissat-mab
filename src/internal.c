@@ -56,6 +56,7 @@ kissat_init (void)
   solver->vivification_ratio = 0;
   solver->isVivied = false;
   solver->triggered_cnt = 0;
+  solver->vivification_ratio_sum = 0;
 #ifndef NDEBUG
   kissat_init_checker (solver);
 #endif
@@ -283,7 +284,7 @@ kissat_print_statistics (kissat * solver)
           else printf("0 ");
   printf("\n");
   printf("c Triggered cnt : %d\n",solver->triggered_cnt);
-  printf("c Vivification ratio : %lf\n",solver->vivification_ratio);
+  printf("c Vivification ratio : %lf\n",solver->vivification_ratio_sum / (double)solver->triggered_cnt);
   }
 #ifndef NPROOFS
   if (solver->proof)

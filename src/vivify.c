@@ -747,7 +747,7 @@ vivify_clause (kissat * solver, clause * c,
       fflush (stdout);
     }
 #endif
-  solver->origin_literals += non_false;
+  
   unsigned implied = INVALID_LIT;
   clause *conflict = 0;
   unsigned level = 0;
@@ -820,18 +820,21 @@ vivify_clause (kissat * solver, clause * c,
     }
 
   if (c->garbage)
+  {
     assert (EMPTY_STACK (solver->analyzed));
+  }
   else if (conflict)
     {
       assert (!EMPTY_STACK (solver->analyzed));
       assert (solver->level);
+      solver->origin_literals += non_false;
       bool irredundant;
       const bool subsumed =
 	vivify_analyze (solver, c, conflict, &irredundant);
-
       if (subsumed)
 	{
 	  LOGCLS (c, "vivify subsumed");
+    solver->vivified_literals += non_false;
 	  kissat_mark_clause_as_garbage (solver, c);
 	  vivify_inc_subsume (solver, c);
 	  res = true;
@@ -1079,5 +1082,7 @@ kissat_vivify (kissat * solver)
     }
   solver->vivification_ratio = solver->origin_literals == 0 ? 0 : (double)solver->vivified_literals / (double)solver->origin_literals;
   solver->isVivied = true;
+  solver->triggered_cnt++;
+  solver->vivification_ratio_sum += solver->vivification_ratio;
   STOP (vivify);
 }

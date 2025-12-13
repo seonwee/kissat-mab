@@ -153,7 +153,7 @@ struct kissat
   double vivification_ratio;
   bool isVivied;
   unsigned triggered_cnt;
-
+  double vivification_ratio_sum;
   heap schedule;
 
   unsigned level;
