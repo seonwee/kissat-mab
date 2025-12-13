@@ -148,7 +148,7 @@ void restart_mab(kissat * solver){
 		double ucb[3] = {0};
     double max_ucb = 0;
     // reward compensation
-    if(solver->isVivied && solver->vivification_ratio < 0.08)
+    if(solver->isVivied && solver->vivification_ratio <= 0.08)
     {
       double vsids_reward = solver->mab_reward[0]/(double)solver->mab_select[0];
       double lrb_reward = solver->mab_reward[2]/(double)solver->mab_select[2];
