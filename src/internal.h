@@ -137,6 +137,7 @@ struct kissat
   unsigned *mab_chosen;
   unsigned mab_chosen_tot;
 
+  unsigned mab_conflicts;
   heap schedule;
 
   unsigned level;
