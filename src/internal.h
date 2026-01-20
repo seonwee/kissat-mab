@@ -136,6 +136,8 @@ struct kissat
   double mab_decisions;
   unsigned *mab_chosen;
   unsigned mab_chosen_tot;
+  // lsw
+  uint64_t mab_last_stable_propagations;
 
   heap schedule;
 
