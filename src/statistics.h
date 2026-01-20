@@ -91,7 +91,7 @@ METRIC( search_propagations, 2, PCNT_PROPS, "%", "propagations") \
 COUNTER( search_ticks, 2, PCNT_TICKS, "%", "ticks") \
 METRIC( sparse_garbage_collections, 2, PCNT_COLLECTIONS, "%", "collections") \
 COUNTER( stable_modes, 2, CONF_INT, "", "interval") \
-METRIC( stable_propagations, 1, PCNT_PROPS, "%", "propagations") \
+COUNTER( stable_propagations, 1, PCNT_PROPS, "%", "propagations") \
 METRIC( stable_ticks, 2, PCNT_TICKS, "%", "ticks") \
 METRIC( strengthened, 1, PCNT_SUBSUMPTION_CHECK, "%", "checks") \
 STATISTIC( substituted, 1, PCNT_VARIABLES, "%", "variables") \
