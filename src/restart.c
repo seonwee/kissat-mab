@@ -111,9 +111,33 @@ reuse_trail (kissat * solver)
   return res;
 }
 
-void restart_mab(kissat * solver){   
+void restart_mab(kissat * solver){
+  static unsigned last_heuristic = -1;
+  static double recent_reward[2][10] = {{0}};
+  static int index[2] = {0,0};
+  static double momentum = 1.0;
+
 	unsigned stable_restarts = 0;
-	solver->mab_reward[solver->heuristic] += log2(solver->mab_decisions)/log2(solver->mab_conflicts);
+  double current_reward = log2(solver->mab_decisions)/log2(solver->mab_conflicts);
+  recent_reward[solver->heuristic][index[solver->heuristic]] = current_reward;
+  index[solver->heuristic] = (index[solver->heuristic]+1)%10;
+  double avg_reward = 0.0;
+  for(int i=0;i<10;i++) avg_reward += recent_reward[solver->heuristic][i];
+  avg_reward /= 10.0;
+  if(solver->heuristic != last_heuristic){
+    momentum = 1.0; 
+  }
+  last_heuristic = solver->heuristic;
+  if(solver->mab_select[solver->heuristic] > 0){
+    if(current_reward > avg_reward){
+    momentum *= 1.1;
+    }else{
+      momentum *= 0.9;
+    }
+  }
+  double adaptive_c = solver->mabc / momentum;  
+
+	solver->mab_reward[solver->heuristic] += current_reward;
 	for (all_variables (idx)) solver->mab_chosen[idx]=0;
 	solver->mab_chosen_tot = 0;
 	solver->mab_decisions = 0;
@@ -125,7 +149,7 @@ void restart_mab(kissat * solver){
 		double ucb[2];
 		solver->heuristic = 0;
 		for(unsigned i=0;i<solver->mab_heuristics;i++) {
-		     ucb[i] = solver->mab_reward[i]/solver->mab_select[i] + sqrt(solver->mabc*log(stable_restarts+1)/solver->mab_select[i]);
+		     ucb[i] = solver->mab_reward[i]/solver->mab_select[i] + sqrt(adaptive_c*log(stable_restarts+1)/solver->mab_select[i]);
 		     if(i!=0 && ucb[i]>ucb[solver->heuristic]) solver->heuristic = i;
 		  }
 	}
