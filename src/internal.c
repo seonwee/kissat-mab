@@ -46,6 +46,8 @@ kissat_init (void)
   solver-> mab_chosen_tot = 0;
   // lsw
   solver->mab_last_stable_propagations = 0;
+  solver->mab_lbd_total = 0;
+  solver->mab_learned_clauses = 0;
 #ifndef NDEBUG
   kissat_init_checker (solver);
 #endif

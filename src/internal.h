@@ -138,6 +138,8 @@ struct kissat
   unsigned mab_chosen_tot;
   // lsw
   uint64_t mab_last_stable_propagations;
+  uint64_t mab_lbd_total;
+  uint64_t mab_learned_clauses;
 
   heap schedule;
 

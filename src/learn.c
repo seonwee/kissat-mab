@@ -124,6 +124,11 @@ kissat_learn_clause (kissat * solver)
     kissat_tick_reluctant (&solver->reluctant);
   const unsigned glue = SIZE_STACK (solver->levels);
   const unsigned size = SIZE_STACK (solver->clause.lits);
+  // lsw
+  if(!solver->probing && solver->stable && solver->mab){
+    solver->mab_lbd_total += glue;
+    solver->mab_learned_clauses += 1;
+  }
   LOG ("learned[%" PRIu64 "] clause glue %u size %u",
        GET (learned), glue, size);
   if (!solver->probing)
