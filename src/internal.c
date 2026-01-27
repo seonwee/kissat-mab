@@ -57,6 +57,7 @@ kissat_init (void)
   solver->isVivied = false;
   solver->triggered_cnt = 0;
   solver->vivification_ratio_sum = 0;
+  solver->mab_conflicts = 0;
 #ifndef NDEBUG
   kissat_init_checker (solver);
 #endif

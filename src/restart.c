@@ -126,10 +126,11 @@ reuse_trail (kissat * solver)
 void restart_mab(kissat * solver){   
   assert(solver->mab_heuristics_flag[solver->heuristic] == true);
 	unsigned stable_restarts = 0;
-	solver->mab_reward[solver->heuristic] += !solver->mab_chosen_tot?0:log2(solver->mab_decisions)/solver->mab_chosen_tot;
+	solver->mab_reward[solver->heuristic] += log2(solver->mab_decisions)/log2(solver->mab_conflicts);
 	for (all_variables (idx)) solver->mab_chosen[idx]=0;
 	solver->mab_chosen_tot = 0;
 	solver->mab_decisions = 0;
+  solver->mab_conflicts = 0;
 	for(unsigned i=0;i<solver->mab_heuristics;i++)
   {
     if(solver->mab_heuristics_flag[i])

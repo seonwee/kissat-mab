@@ -154,6 +154,8 @@ struct kissat
   bool isVivied;
   unsigned triggered_cnt;
   double vivification_ratio_sum;
+  unsigned mab_conflicts;
+
   heap schedule;
 
   unsigned level;
