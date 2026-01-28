@@ -125,12 +125,13 @@ reuse_trail (kissat * solver)
 
 void restart_mab(kissat * solver){   
   assert(solver->mab_heuristics_flag[solver->heuristic] == true);
+  static int win_history[50];   // 存储最近50次选择的策略下标
+  static int win_head = 0;      // 环形缓冲区的头指针
 	unsigned stable_restarts = 0;
-	solver->mab_reward[solver->heuristic] += log2(solver->mab_decisions)/log2(solver->mab_conflicts);
+	solver->mab_reward[solver->heuristic] += !solver->mab_chosen_tot?0:log2(solver->mab_decisions)/solver->mab_chosen_tot;
 	for (all_variables (idx)) solver->mab_chosen[idx]=0;
 	solver->mab_chosen_tot = 0;
 	solver->mab_decisions = 0;
-  solver->mab_conflicts = 0;
 	for(unsigned i=0;i<solver->mab_heuristics;i++)
   {
     if(solver->mab_heuristics_flag[i])
@@ -147,18 +148,62 @@ void restart_mab(kissat * solver){
     }
 	}else{
 		double ucb[3] = {0};
+    double lcb[3] = {0};
+    double reward_avg[3] = {0};
     double max_ucb = 0;
 		for(unsigned i=0;i<solver->mab_heuristics;i++) {
         if(solver->mab_heuristics_flag[i])
         {
-          ucb[i] = solver->mab_reward[i]/solver->mab_select[i] + sqrt(solver->mabc*log(stable_restarts+1)/solver->mab_select[i]);
+          double avg_reward = solver->mab_reward[i]/solver->mab_select[i];
+          double exploration = sqrt(solver->mabc*log(stable_restarts+1)/solver->mab_select[i]);
+          
+          ucb[i] = avg_reward + exploration;
+          lcb[i] = avg_reward - exploration;
+          reward_avg[i] = avg_reward;
           if(ucb[i] > max_ucb)
           {
             max_ucb = ucb[i];
             solver->heuristic = i;
           }
         }
-		  }
+		}
+    if(reward_avg[0] > reward_avg[2]){
+      if(lcb[0] > ucb[2]){
+        printf("MAB branch converge (Interval) to VSIDS at %lf s\n",kissat_process_time());
+      }
+    }
+    if(reward_avg[2] > reward_avg[0]){
+      if(lcb[2] > ucb[0]){
+        printf("MAB branch converge (Interval) to LRB at %lf s\n",kissat_process_time());
+      }
+    }
+    win_history[win_head] = solver->heuristic;
+    win_head = (win_head + 1) % 50; // 环形移动指针
+
+    // 2. 只有当窗口填满50次后才开始统计
+    if (stable_restarts > 50) {
+        int count_0 = 0;
+        int count_2 = 0;
+        
+        // 遍历窗口统计
+        for (int k = 0; k < 50; k++) {
+            if (win_history[k] == 0) count_0++;
+            if (win_history[k] == 2) count_2++;
+        }
+
+        // 3. 计算比例并判断 (设定阈值，例如 90% 即 45/50)
+        double threshold_ratio = 0.70; // 90%
+        
+        if ((double)count_0 / 50.0 >= threshold_ratio) {
+             printf("MAB branch converge (Window 50) to VSIDS (%.0f%%) at %lf s\n", 
+                    ((double)count_0 / 50.0)*100, kissat_process_time());
+        }
+        else if ((double)count_2 / 50.0 >= threshold_ratio) {
+             printf("MAB branch converge (Window 50) to LRB (%.0f%%) at %lf s\n", 
+                    ((double)count_2 / 50.0)*100, kissat_process_time());
+        }
+    }
+
 	}
 	solver->mab_select[solver->heuristic]++; 
   solver->isVivied = false;
