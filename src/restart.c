@@ -125,7 +125,7 @@ void restart_mab(kissat * solver){
 		double ucb[2];
 		solver->heuristic = 0;
 		for(unsigned i=0;i<solver->mab_heuristics;i++) {
-		     ucb[i] = solver->mab_reward[i]/solver->mab_select[i] + sqrt(solver->mabc*log(stable_restarts+1)/solver->mab_select[i]);
+		     ucb[i] = solver->mab_reward[i]/solver->mab_select[i] + sqrt(solver->mabc*log(stable_restarts+1)/solver->mab_select[i]*solver->mab_select[i]);
 		     if(i!=0 && ucb[i]>ucb[solver->heuristic]) solver->heuristic = i;
 		  }
 	}
